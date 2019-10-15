@@ -11,5 +11,7 @@
     <string name="orText">OR</string>
     <string name="signUpText">Sign Up</string>
     <string name="pizzaImageText">Pizza Image</string>
+    <string name="pizzaImage">Pizza Image</string>
+    <string name="placeholderText">lorem ipsum</string>
 
 </resources>

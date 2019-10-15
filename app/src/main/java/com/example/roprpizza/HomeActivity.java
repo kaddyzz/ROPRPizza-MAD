@@ -23,8 +23,8 @@ public class HomeActivity extends AppCompatActivity {
     HomeAdapter homeAdapter;
     ArrayList<PizzaTypesModelClass> pizzaData;
 
-    public static final String[] pizzaName= {"Breaking Bad","Rick and Morty", "FRIENDS","Sherlock","Stranger Things"};
-    public static final int[] pizzaImages = {R.drawable.logo,R.drawable.logo,R.drawable.logo,R.drawable.logo,R.drawable.logo};
+    public static final String[] pizzaName= {"Breaking Bad","Rick and Morty", "FRIENDS","Sherlock","Stranger Things","Test"};
+    public static final int[] pizzaImages = {R.drawable.logo,R.drawable.logo,R.drawable.logo,R.drawable.logo,R.drawable.logo,R.drawable.logo};
 
 
 
@@ -46,7 +46,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         homeAdapter = new HomeAdapter(pizzaData);
-        recyclerView = (RecyclerView)findViewById(R.id.recyclerViewPizzas);
+        recyclerView = findViewById(R.id.recyclerViewPizzas);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(homeAdapter);

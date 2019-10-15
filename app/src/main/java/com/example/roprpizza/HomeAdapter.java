@@ -17,8 +17,11 @@ import java.util.List;
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
 
-    List<PizzaTypesModelClass> pizzaList;
-    Context context;
+    private List<PizzaTypesModelClass> pizzaList;
+    private Context context;
+
+    private int positionIndex = 0;
+
 
     public HomeAdapter(List<PizzaTypesModelClass> pizzaList)
     {
@@ -28,16 +31,25 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder
     {
-        ImageView imagePizza;
-        TextView textPizza;
-        CardView cardView;
+        ImageView imagePizza1;
+        TextView textPizza1;
+        CardView cardView1;
+
+        ImageView imagePizza2;
+        TextView textPizza2;
+        CardView cardView2;
+
 
         public ViewHolder(View itemView)
         {
             super(itemView);
-            this.imagePizza = (ImageView)itemView.findViewById(R.id.imagePizza);
-            this.textPizza = (TextView)itemView.findViewById(R.id.namePizza);
-            this.cardView = (CardView)itemView.findViewById(R.id.cardViewItem);
+            this.imagePizza1 = itemView.findViewById(R.id.imagePizza1);
+            this.textPizza1 = itemView.findViewById(R.id.namePizza1);
+            this.cardView1 = itemView.findViewById(R.id.cardViewItem1);
+
+            this.imagePizza2 = itemView.findViewById(R.id.imagePizza2);
+            this.textPizza2 = itemView.findViewById(R.id.namePizza2);
+            this.cardView2 = itemView.findViewById(R.id.cardViewItem2);
         }
 
     }
@@ -58,20 +70,33 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull HomeAdapter.ViewHolder holder, final int position) {
 
-        PizzaTypesModelClass pizzaData = pizzaList.get(position);
+        PizzaTypesModelClass pizzaData1 = pizzaList.get(positionIndex);
+        PizzaTypesModelClass pizzaData2 = pizzaList.get(positionIndex + 1);
 
-        holder.textPizza.setText(pizzaData.getPizzaName());
-        holder.imagePizza.setImageResource(pizzaData.getImageOfPizza());
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+
+        holder.textPizza1.setText(pizzaData1.getPizzaName());
+        holder.imagePizza1.setImageResource(pizzaData1.getImageOfPizza());
+        holder.cardView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(context,"The position is:" + position,Toast.LENGTH_SHORT).show();
             }
         });
+
+        holder.textPizza2.setText(pizzaData2.getPizzaName());
+        holder.imagePizza2.setImageResource(pizzaData2.getImageOfPizza());
+        holder.cardView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context,"The position is:" + position+1,Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        positionIndex += 2;
     }
 
     @Override
     public int getItemCount() {
-        return pizzaList.size();
+        return pizzaList.size()/2;
     }
 }

@@ -10,9 +10,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -86,7 +89,30 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        passwordField.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    /* Write your logic here that will be executed when user taps next button */
 
+
+                    loginAction();
+                    handled = true;
+                }
+                return handled;
+            }
+        });
+
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+
+        //Do nothing on back press
+        Toast.makeText(this, "No further back allowed.", Toast.LENGTH_SHORT).show();
     }
 
     //Button methods
@@ -179,22 +205,29 @@ public class MainActivity extends AppCompatActivity {
             // Signed in successfully, show authenticated UI.
             //startActivity(new Intent(this, MyProfileActivity.class));
 
-            String fullName = account.getDisplayName();
-            String email = account.getEmail();
-            Uri imageURL = account.getPhotoUrl();
+            try {
+                String fullName = account.getDisplayName();
+                String email = account.getEmail();
+                Uri imageURL = account.getPhotoUrl();
 
-            //Save details in shared pref
-            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-            SharedPreferences.Editor editor = pref.edit();
+                //Save details in shared pref
+                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+                SharedPreferences.Editor editor = pref.edit();
 
-            editor.putString("fullName", fullName); // Storing string
-            editor.putString("email", email); // Storing string
-            editor.putString("imageURL", imageURL.toString()); // Storing string
-            editor.putInt("loginType",1);
+                editor.putString("fullName", fullName); // Storing string
+                editor.putString("email", email); // Storing string
+                editor.putString("imageURL", imageURL.toString()); // Storing string
+                editor.putInt("loginType",1);
 
-            editor.commit(); // commit changes
+                editor.apply(); // commit changes
 
-            startActivity(new Intent(this, MyProfileActivity.class));
+                startActivity(new Intent(this, MyProfileActivity.class));
+            }
+            catch (Exception ex)
+            {
+                Toast.makeText(this, "Error occured!!", Toast.LENGTH_SHORT).show();
+            }
+
 
         } catch (ApiException e) {
             Log.w("GoogleSignInError", "signInResult:failed code=" + e.getStatusCode());
@@ -284,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
                     editor.putString("imageURL", imageURL); // Storing string
                     editor.putInt("loginType",2);
 
-                    editor.commit(); // commit changes
+                    editor.apply(); // commit changes
 
                     startActivity(new Intent(MainActivity.this, MyProfileActivity.class));
 
