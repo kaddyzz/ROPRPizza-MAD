@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ROPR Pizza</string>
+    <string name="googleSignText">Login using Google</string>
+    <string name="facebook_app_id">2919100218108793</string>
+    <string name="fb_login_protocol_scheme">fb2919100218108793</string>
+    <string name="loginImage">Login Image</string>
+    <string name="loginText">Login</string>
+    <string name="logoutText">Logout</string>
+    <string name="emailText">Email</string>
+    <string name="passwordText">Password</string>
+    <string name="orText">OR</string>
+    <string name="signUpText">Sign Up</string>
+    <string name="pizzaImageText">Pizza Image</string>
+
+</resources>
