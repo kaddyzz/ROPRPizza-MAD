@@ -300,12 +300,17 @@ public class MainActivity extends AppCompatActivity {
             public void onCompleted(JSONObject object, GraphResponse response) {
 
                 try {
+
+                    //Crete get data
                     String firstName = object.getString("first_name");
                     String lastName = object.getString("last_name");
                     String email = object.getString("email");
                     String id = object.getString("id");
 
                     String imageURL = "https://graph.facebook.com/" + id + "/picture?type=normal";
+
+
+
 
 
                     //Save details in shared pref
