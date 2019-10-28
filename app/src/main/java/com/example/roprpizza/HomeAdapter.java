@@ -76,19 +76,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
         holder.textPizza1.setText(pizzaData1.getPizzaName());
         holder.imagePizza1.setImageResource(pizzaData1.getImageOfPizza());
+
         holder.cardView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context,"The position is:" + position,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"The position is:" + positionIndex,Toast.LENGTH_SHORT).show();
             }
         });
 
         holder.textPizza2.setText(pizzaData2.getPizzaName());
         holder.imagePizza2.setImageResource(pizzaData2.getImageOfPizza());
+
         holder.cardView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context,"The position is:" + position+1,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"The position is:" + positionIndex+1,Toast.LENGTH_SHORT).show();
             }
         });
 

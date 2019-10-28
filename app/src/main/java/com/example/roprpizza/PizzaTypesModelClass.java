@@ -7,6 +7,12 @@ public class PizzaTypesModelClass
     private String pizzaName;
     private int imageOfPizza;
 
+    public PizzaTypesModelClass(String pizzaName, int imageOfPizza)
+    {
+        this.pizzaName = pizzaName;
+        this.imageOfPizza = imageOfPizza;
+    }
+
     public String getPizzaName()
     {
         return pizzaName;

@@ -134,7 +134,18 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            startActivity(new Intent(MainActivity.this, HomeActivity.class));
+            //Save details in shared pref
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+            SharedPreferences.Editor editor = pref.edit();
+
+            editor.putString("fullName","Test User"); // Storing string
+            editor.putString("email",emailField.getText().toString() ); // Storing string
+            editor.putString("imageURL",""); // Storing string
+            editor.putInt("loginType",0);
+
+            editor.apply(); // commit changes
+
+            startActivity(new Intent(MainActivity.this, NavigationMainActivity.class));
         }
     }
 
@@ -221,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
                 editor.apply(); // commit changes
 
-                startActivity(new Intent(this, MyProfileActivity.class));
+                startActivity(new Intent(this, NavigationMainActivity.class));
             }
             catch (Exception ex)
             {
@@ -242,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null)
         {
-            startActivity(new Intent(MainActivity.this, MyProfileActivity.class));
+            startActivity(new Intent(MainActivity.this, NavigationMainActivity.class));
         }
 
         super.onStart();
@@ -310,9 +321,6 @@ public class MainActivity extends AppCompatActivity {
                     String imageURL = "https://graph.facebook.com/" + id + "/picture?type=normal";
 
 
-
-
-
                     //Save details in shared pref
                     SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
                     SharedPreferences.Editor editor = pref.edit();
@@ -324,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
 
                     editor.apply(); // commit changes
 
-                    startActivity(new Intent(MainActivity.this, MyProfileActivity.class));
+                    startActivity(new Intent(MainActivity.this, NavigationMainActivity.class));
 
 
                 } catch (JSONException e) {

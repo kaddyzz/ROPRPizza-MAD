@@ -14,4 +14,14 @@
     <string name="pizzaImage">Pizza Image</string>
     <string name="placeholderText">lorem ipsum</string>
 
+    <string name="navigation_drawer_open">Open Navigation Bar</string>
+    <string name="navigation_drawer_close">Close Navigation Bar</string>
+    <string name="profileImage">Profile Image</string>
+
+    <string name="homeSide">Home</string>
+    <string name="profileSide">Profile</string>
+    <string name="historySide">Order\'s History</string>
+    <string name="shareSide">Share</string>
+    <string name="logoutSide">Logout</string>
+    <string name="othersSide">Others</string>
 </resources>
