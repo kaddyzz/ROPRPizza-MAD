@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -40,7 +42,6 @@ public class NavigationMainActivity extends AppCompatActivity implements Navigat
         Toolbar toolbar = findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
 
-
         drawerLayout = findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -61,7 +62,6 @@ public class NavigationMainActivity extends AppCompatActivity implements Navigat
         Glide.with(this).load(pref.getString("imageURL", "")).into(profileImage);
 
 
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -72,6 +72,14 @@ public class NavigationMainActivity extends AppCompatActivity implements Navigat
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeActivity()).commit();
             navigationView.setCheckedItem(R.id.nav_home);
         }
+
+        // Configure sign-in to request the user's ID, email address, and basic profile.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
     @Override
