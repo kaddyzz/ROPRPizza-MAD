@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null)
         {
-            startActivity(new Intent(MainActivity.this, NavigationMainActivity.class));
+          //  startActivity(new Intent(MainActivity.this, NavigationMainActivity.class));
         }
 
         super.onStart();

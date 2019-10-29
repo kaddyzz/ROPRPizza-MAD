@@ -16,15 +16,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageViewProfile"
         android:layout_width="128dp"
         android:layout_height="128dp"
         android:layout_marginTop="44dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/com_facebook_likeboxcountview_text_color"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
