@@ -19,7 +19,7 @@
         app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/splash_screen" />
+        app:srcCompat="@drawable/splash_screen_f" />
 
     <View
         android:id="@+id/viewLogin"
@@ -42,13 +42,13 @@
         android:layout_height="50dp"
         android:layout_marginStart="42dp"
         android:layout_marginLeft="42dp"
-        android:layout_marginTop="292dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="42dp"
         android:layout_marginRight="42dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewOR" />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
@@ -67,28 +67,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
 
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="33dp"
-        android:alpha="1"
-        android:gravity="center"
-        android:text="@string/loginText"
-        android:textColor="#9C9A9A"
-        android:textSize="36sp"
-        app:fontFamily="@font/cousine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <EditText
         android:id="@+id/editTextEmail"
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginStart="42dp"
         android:layout_marginLeft="42dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="42dp"
         android:layout_marginRight="42dp"
         android:ems="10"
@@ -105,7 +90,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
 
     <EditText
         android:id="@+id/editTextPassword"
@@ -178,8 +163,8 @@
         android:layout_marginStart="42dp"
         android:layout_marginLeft="42dp"
         android:layout_marginTop="20dp"
-        android:text="@string/loginText"
         android:radius="10dp"
+        android:text="@string/loginText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
@@ -190,9 +175,21 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="42dp"
         android:layout_marginRight="42dp"
-        android:text="@string/signUpText"
         android:radius="10dp"
+        android:text="@string/signUpText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
+
+    <ImageView
+        android:id="@+id/imageViewLogo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/logoText"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewBackground"
+        app:layout_constraintHorizontal_bias="0.50"
+        app:layout_constraintStart_toEndOf="@+id/imageViewBackground"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,8 +64,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        //Set deafult theme before on create
+        setTheme(R.style.AppTheme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         //Initializations
         callGoogleSignIn();
@@ -155,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
     void signUpAction(){
 
+        startActivity(new Intent(MainActivity.this, SignUpActivity.class));
     }
 
     //Google Methods
@@ -168,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
         // Set the dimensions of the sign-in button.
         SignInButton signInButton = findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
+
+
 
         // Configure sign-in to request the user's ID, email address, and basic profile.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

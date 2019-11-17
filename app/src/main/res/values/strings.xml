@@ -24,4 +24,49 @@
     <string name="shareSide">Share</string>
     <string name="logoutSide">Logout</string>
     <string name="othersSide">Others</string>
+    <string name="logoText">Logo</string>
+    <string name="selectDrinks">Select one free drink</string>
+    <string name="cocaCola">Coca Cola</string>
+    <string name="pepsi">Pepsi</string>
+    <string name="sevenUp">7 Up</string>
+    <string name="allergies">Please metion any allergies or intolerances.</string>
+    <string name="allergies1">Allergies</string>
+    <string name="goToCheckout">Go To Checkout</string>
+    <string name="enterAddress">Address</string>
+    <string name="aptNumber">Apartment Number</string>
+    <string name="city">City</string>
+    <string name="postalCode">Postal Code</string>
+    <string name="goToSelectAddress">Select Address</string>
+    <string name="province">Province</string>
+    <string name="makePayment">Continue with Paypal</string>
+    <string name="payment">Payment</string>
+    <string name="cashOnDelivery">Pay On Delivery</string>
+    <string name="orderPlaced">Order Placed</string>
+    <string name="orderPlacedSuccessfully">Order Placed Successfully</string>
+    <string name="estimatedDeliveryTime">Estimated Delivery Time</string>
+    <string name="minutes">45 to 60 Minutes</string>
+    <string name="paymentMethod">Payment Method</string>
+    <string name="cashOnDeliveryD">Cash On Delivery</string>
+    <string name="callRestraunt">Call Restraunt</string>
+    <string name="home">Go Home</string>
+    <string name="signUp">Sign Up</string>
+    <string name="name">Name</string>
+    <string name="password">Password</string>
+    <string name="confirmPassword">Confirm Password</string>
+    <string name="orderHistory">Order History</string>
+    <string name="samePrice">Offer : Every Pizza $14</string>
+    <string-array name="province">
+        <item>Alberta</item>
+        <item>British Columbia</item>
+        <item>Manitoba</item>
+        <item>New Brunswick</item>
+        <item>Newfoundland and Labrador</item>
+        <item>Nova Scotia</item>
+        <item>Ontario</item>
+        <item>Prince Edward Island</item>
+        <item>Quebec</item>
+        <item>Saskatchewan</item>
+    </string-array>
+
+
 </resources>

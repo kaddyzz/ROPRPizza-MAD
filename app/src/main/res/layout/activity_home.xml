@@ -6,16 +6,43 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
+        <ImageView
+            android:id="@+id/imageViewBg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.1"
+            android:contentDescription="@string/pizzaImage"
+            android:scaleType="centerCrop"
+            android:src="@drawable/splash_screen"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewHomeTitle"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:fontFamily="cursive"
+            android:gravity="center"
+            android:shadowColor="@color/browser_actions_title_color"
+            android:text="@string/samePrice"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewPizzas"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewHomeTitle" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -56,6 +56,8 @@ public class HomeActivity extends Fragment {
         recyclerView.setAdapter(homeAdapter);
 
 
+
+
         return view;
     }
 

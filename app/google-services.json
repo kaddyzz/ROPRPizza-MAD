@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "777316506036",
+    "firebase_url": "https://ropr-pizza.firebaseio.com",
+    "project_id": "ropr-pizza",
+    "storage_bucket": "ropr-pizza.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777316506036:android:2c30f2419303826b4bfae1",
+        "android_client_info": {
+          "package_name": "com.example.roprpizza"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777316506036-6mehgd2ce177q4gshn71c476t5ser2q9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.roprpizza",
+            "certificate_hash": "bfcdf739adaa37a4541be6f9bcb7e7f0cd7db2e5"
+          }
+        },
+        {
+          "client_id": "777316506036-v2fk3evbabceen2jpcss4kqjg4gm72vv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4oTRpyXUKGFrv06L5fHfeCUgXB60Ytp4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777316506036-kvbq9p486lqkclj4as99gs57jd5vusmn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -35,6 +35,9 @@ public class NavigationMainActivity extends AppCompatActivity implements Navigat
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Set deafult theme before on create
+        setTheme(R.style.AppTheme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_main);
 
@@ -59,7 +62,16 @@ public class NavigationMainActivity extends AppCompatActivity implements Navigat
 
         profileName.setText(pref.getString("fullName", ""));
         profileEmail.setText(pref.getString("email", ""));
-        Glide.with(this).load(pref.getString("imageURL", "")).into(profileImage);
+
+        if (pref.getInt("loginType", 0) == 0)
+        {
+            profileImage.setImageBitmap(MyUtilities.decodeBase64(pref.getString("imageURL", "")));
+        }
+        else
+        {
+            Glide.with(this).load(pref.getString("imageURL", "")).into(profileImage);
+        }
+
 
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -109,8 +121,7 @@ public class NavigationMainActivity extends AppCompatActivity implements Navigat
                 break;
 
             case R.id.nav_history:
-                //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyProfileActivity()).commit();
-                Toast.makeText(this, "Still in progress!!", Toast.LENGTH_SHORT).show();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OrderHistoryActivity()).commit();
                 break;
 
             case R.id.nav_share:

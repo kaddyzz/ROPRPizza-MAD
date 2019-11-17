@@ -43,6 +43,7 @@ public class MyProfileActivity extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.activity_my_profile, container, false);
 
        // setUpProfile(view);
@@ -68,10 +69,16 @@ public class MyProfileActivity extends Fragment {
         // Build a GoogleSignInClient with the options specified by gso.
         googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
-
-
-        Glide.with(MyProfileActivity.this).load(pref.getString("imageURL", "")).into(profileImageView);
-
+        if (pref.getInt("loginType", 0) == 0)
+        {
+            //If normal login type
+            profileImageView.setImageBitmap(MyUtilities.decodeBase64(pref.getString("imageURL", "")));
+        }
+        else
+        {
+            //URL login
+            Glide.with(this).load(pref.getString("imageURL", "")).into(profileImageView);
+        }
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override

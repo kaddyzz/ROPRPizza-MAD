@@ -1,6 +1,7 @@
 package com.example.roprpizza;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         TextView textPizza2;
         CardView cardView2;
 
-
         public ViewHolder(View itemView)
         {
             super(itemView);
@@ -68,10 +68,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HomeAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final HomeAdapter.ViewHolder holder, final int position) {
 
-        PizzaTypesModelClass pizzaData1 = pizzaList.get(positionIndex);
-        PizzaTypesModelClass pizzaData2 = pizzaList.get(positionIndex + 1);
+        final PizzaTypesModelClass pizzaData1 = pizzaList.get(positionIndex);
+        final PizzaTypesModelClass pizzaData2 = pizzaList.get(positionIndex + 1);
 
 
         holder.textPizza1.setText(pizzaData1.getPizzaName());
@@ -80,7 +80,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         holder.cardView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context,"The position is:" + positionIndex,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"The position is:" + position,Toast.LENGTH_SHORT).show();
+
+                //Move to next
+                Intent moveWithData = new Intent( context, DetailsActivity.class);
+                moveWithData.putExtra("pizzaImage", pizzaData1.getImageOfPizza());
+                moveWithData.putExtra("pizzaName", pizzaData1.getPizzaName());
+
+                context.startActivity(moveWithData);
             }
         });
 
@@ -90,12 +97,20 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         holder.cardView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context,"The position is:" + positionIndex+1,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"The position is:" + position+1,Toast.LENGTH_SHORT).show();
+
+                //Move to next
+                Intent moveWithData = new Intent( context, DetailsActivity.class);
+                moveWithData.putExtra("pizzaImage", pizzaData2.getImageOfPizza());
+                moveWithData.putExtra("pizzaName", pizzaData2.getPizzaName());
+
+                context.startActivity(moveWithData);
             }
         });
 
         positionIndex += 2;
     }
+
 
     @Override
     public int getItemCount() {
