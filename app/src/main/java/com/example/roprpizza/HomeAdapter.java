@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
@@ -74,13 +76,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         final PizzaTypesModelClass pizzaData2 = pizzaList.get(positionIndex + 1);
 
 
+        //Set pizza name  and image on left
         holder.textPizza1.setText(pizzaData1.getPizzaName());
-        holder.imagePizza1.setImageResource(pizzaData1.getImageOfPizza());
+        Glide.with(context).load(pizzaData1.getImageOfPizza()).into(holder.imagePizza1);
 
         holder.cardView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(context,"The position is:" + position,Toast.LENGTH_SHORT).show();
 
                 //Move to next
                 Intent moveWithData = new Intent( context, DetailsActivity.class);
@@ -91,13 +93,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             }
         });
 
+        //Set pizza name and image or right
         holder.textPizza2.setText(pizzaData2.getPizzaName());
-        holder.imagePizza2.setImageResource(pizzaData2.getImageOfPizza());
+        Glide.with(context).load(pizzaData2.getImageOfPizza()).into(holder.imagePizza2);
 
         holder.cardView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(context,"The position is:" + position+1,Toast.LENGTH_SHORT).show();
 
                 //Move to next
                 Intent moveWithData = new Intent( context, DetailsActivity.class);

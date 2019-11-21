@@ -1,5 +1,6 @@
 package com.example.roprpizza;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,12 +39,24 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
@@ -60,6 +74,15 @@ public class MainActivity extends AppCompatActivity {
     Button signUpButton;
     EditText emailField;
     EditText passwordField;
+
+    //Firebase
+    private FirebaseFirestore db;
+    // [START declare_auth]
+    private FirebaseAuth mAuth;
+    // [END declare_auth]
+
+    //Progress HUD
+    KProgressHUD kProgressHUD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginAction();
+                //loginAction();
+                checkInFirebase();
             }
         });
 
@@ -109,6 +133,19 @@ public class MainActivity extends AppCompatActivity {
                 return handled;
             }
         });
+
+        //Firebase instance
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        //Create HUD
+        kProgressHUD = KProgressHUD.create(MainActivity.this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setDetailsLabel("Logging In")
+                .setCancellable(false)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f);
 
     }
 
@@ -140,20 +177,68 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            //Save details in shared pref
-            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-            SharedPreferences.Editor editor = pref.edit();
-
-            editor.putString("fullName","Test User"); // Storing string
-            editor.putString("email",emailField.getText().toString() ); // Storing string
-            editor.putString("imageURL",""); // Storing string
-            editor.putInt("loginType",0);
-
-            editor.apply(); // commit changes
-
-            startActivity(new Intent(MainActivity.this, NavigationMainActivity.class));
+            //Get authentication using firebase
+            checkInFirebase();
         }
     }
+
+    private void checkInFirebase() {
+
+        //Start HUD
+        kProgressHUD.show();
+
+        //Firebase authentication
+        mAuth.signInWithEmailAndPassword(emailField.getText().toString(), passwordField.getText().toString())
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("FIREBASE ::", "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            //Dismiss HUD
+                            kProgressHUD.dismiss();
+
+                            try {
+                                String fullName = user.getDisplayName();
+                                String email = user.getEmail();
+                                Uri imageURL = user.getPhotoUrl();
+
+                                //Save details in shared pref
+                                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+                                SharedPreferences.Editor editor = pref.edit();
+
+                                editor.putString("fullName", fullName); // Storing string
+                                editor.putString("email", email); // Storing string
+                                editor.putString("imageURL", imageURL.toString()); // Storing string
+                                editor.putInt("loginType",0);
+                                editor.putString("userID",user.getUid());
+
+                                editor.apply(); // commit changes
+
+                                startActivity(new Intent(MainActivity.this, NavigationMainActivity.class));
+                            }
+                            catch (Exception ex)
+                            {
+                                Toast.makeText(MainActivity.this, "Error occured!!", Toast.LENGTH_SHORT).show();
+                            }
+
+
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            kProgressHUD.dismiss();
+                            Log.w("FIREBASE ::", "signInWithEmail:failure", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+
 
     public static boolean isValidEmail(CharSequence target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
@@ -238,6 +323,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("email", email); // Storing string
                 editor.putString("imageURL", imageURL.toString()); // Storing string
                 editor.putInt("loginType",1);
+                editor.putString("userID",account.getId());
 
                 editor.apply(); // commit changes
 
@@ -259,10 +345,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
 
         //Check for existing account
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if (account != null)
+        //Save details in shared pref
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+        SharedPreferences.Editor editor = pref.edit();
+
+        if (pref.contains("userID"))
         {
-          //  startActivity(new Intent(MainActivity.this, NavigationMainActivity.class));
+            startActivity(new Intent(MainActivity.this, NavigationMainActivity.class));
         }
 
         super.onStart();
@@ -338,6 +427,8 @@ public class MainActivity extends AppCompatActivity {
                     editor.putString("email", email); // Storing string
                     editor.putString("imageURL", imageURL); // Storing string
                     editor.putInt("loginType",2);
+                    editor.putString("userID",id);
+
 
                     editor.apply(); // commit changes
 
@@ -359,6 +450,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
 
 
 

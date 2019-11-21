@@ -24,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -63,15 +64,7 @@ public class NavigationMainActivity extends AppCompatActivity implements Navigat
         profileName.setText(pref.getString("fullName", ""));
         profileEmail.setText(pref.getString("email", ""));
 
-        if (pref.getInt("loginType", 0) == 0)
-        {
-            profileImage.setImageBitmap(MyUtilities.decodeBase64(pref.getString("imageURL", "")));
-        }
-        else
-        {
-            Glide.with(this).load(pref.getString("imageURL", "")).into(profileImage);
-        }
-
+        Glide.with(NavigationMainActivity.this).load(pref.getString("imageURL", "")).into(profileImage);
 
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -103,7 +96,8 @@ public class NavigationMainActivity extends AppCompatActivity implements Navigat
         }
         else
         {
-            super.onBackPressed();
+            //super.onBackPressed();
+            Toast.makeText(this, "No further back allowed.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -150,6 +144,8 @@ public class NavigationMainActivity extends AppCompatActivity implements Navigat
 
         switch (loginType) {
             case 0: {
+                FirebaseAuth.getInstance().signOut();
+
                 final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
                 SharedPreferences.Editor editor = pref.edit();
                 editor.clear();

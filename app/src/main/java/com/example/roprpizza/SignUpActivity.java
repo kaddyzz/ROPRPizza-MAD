@@ -1,5 +1,6 @@
 package com.example.roprpizza;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -7,6 +8,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,8 +27,29 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.kaopiz.kprogresshud.KProgressHUD;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import static com.example.roprpizza.MainActivity.isValidEmail;
 
@@ -38,8 +61,25 @@ public class SignUpActivity extends AppCompatActivity {
     EditText editTextConfirmPassword;
 
     ImageView imageProfile;
+    Uri imageURI;
 
     String imageSelected = "";
+
+    //Firebase
+    FirebaseStorage storage;
+    StorageReference storageReference;
+    private FirebaseFirestore db;
+    // [START declare_auth]
+    private FirebaseAuth mAuth;
+    // [END declare_auth]
+
+    //Progress HUD
+    KProgressHUD kProgressHUD;
+
+    //Email Regex
+    public static boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +114,22 @@ public class SignUpActivity extends AppCompatActivity {
                 selectImage();
             }
         });
+
+        //Firebase instance
+        db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+        mAuth = FirebaseAuth.getInstance();
+
+
+        //Create HUD
+        kProgressHUD = KProgressHUD.create(SignUpActivity.this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setDetailsLabel("Setting Up Profile")
+                .setCancellable(false)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f);
     }
 
     private void selectImage() {
@@ -139,12 +195,12 @@ public class SignUpActivity extends AppCompatActivity {
 
                     try {
                         //data.getData returns the content URI for the selected Image
-                        final Uri imageUri = data.getData();
-                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                        imageURI = data.getData();
+                        final InputStream imageStream = getContentResolver().openInputStream(imageURI);
                         final Bitmap selectedImageInBM = BitmapFactory.decodeStream(imageStream);
                         //image_view.setImageBitmap(selectedImage);
                         imageProfile.setImageBitmap(selectedImageInBM);
-                        imageSelected = MyUtilities.encodeTobase64(selectedImageInBM);
+                        imageSelected = "Image Selected";
 
                     } catch (FileNotFoundException e) {
                     }
@@ -154,7 +210,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-
     //Button methods
     void signUpAction() {
 
@@ -163,41 +218,173 @@ public class SignUpActivity extends AppCompatActivity {
         if (imageSelected.isEmpty()) {
             Toast.makeText(this, "Please select an image.", Toast.LENGTH_SHORT).show();
 
-        }else if (editTextName.getText().toString().equals("")) {
+        }else if (editTextName.getText().toString().trim().equals("")) {
             Toast.makeText(this, "Please enter name.", Toast.LENGTH_SHORT).show();
 
-        } else if (editTextEmail.getText().toString().equals("")) {
+        } else if (editTextEmail.getText().toString().trim().equals("")) {
             Toast.makeText(this, "Please enter email address.", Toast.LENGTH_SHORT).show();
 
         } else if (!isValidEmail(editTextEmail.getText().toString())) {
             Toast.makeText(this, "Please enter a valid email.", Toast.LENGTH_SHORT).show();
 
-        } else if (editTextPassword.getText().toString().equals("")) {
+        } else if (editTextPassword.getText().toString().trim().equals("")) {
             Toast.makeText(this, "Please enter password.", Toast.LENGTH_SHORT).show();
 
-        } else if (editTextConfirmPassword.getText().toString().equals("")) {
+        } else if (editTextPassword.getText().toString().trim().length() < 7) {
+            Toast.makeText(this, "Password should be atleast 7 digits.", Toast.LENGTH_SHORT).show();
+
+        } else if (editTextConfirmPassword.getText().toString().trim().equals("")) {
             Toast.makeText(this, "Please enter confirm password.", Toast.LENGTH_SHORT).show();
 
+        } else if (!editTextPassword.getText().toString().trim().equals((editTextConfirmPassword.getText().toString().trim()))) {
+            Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_SHORT).show();
+
         } else {
-            //Save details in shared pref
-            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
-            SharedPreferences.Editor editor = pref.edit();
 
-            editor.putString("fullName", editTextName.getText().toString()); // Storing string
-            editor.putString("email", editTextEmail.getText().toString()); // Storing string
-            editor.putString("imageURL",imageSelected); // Storing string
-            editor.putInt("loginType", 0);
-
-            editor.apply(); // commit changes
-
-            startActivity(new Intent(SignUpActivity.this, NavigationMainActivity.class));
+            //Firebase save data and upload image
+            uploadImage();
         }
     }
 
-    //Email Regex
-    public static boolean isValidEmail(CharSequence target) {
-        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    public void createUser(){
+
+        //Map all the values
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("userName",editTextName.getText().toString().trim());
+        userInfo.put("userEmail",editTextEmail.getText().toString().trim());
+        userInfo.put("userPassword",editTextPassword.getText().toString().trim());
+        userInfo.put("userPhoto",imageSelected);
+
+        // Add a new document with a generated ID
+        db.collection("users")
+                .add(userInfo)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+
+                        //Dismiss HUD
+                        kProgressHUD.dismiss();
+
+                        Log.d("Firebase: ", "User added with ID: " + documentReference.getId());
+
+                        //Save details in shared pref
+                        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+                        SharedPreferences.Editor editor = pref.edit();
+
+                        editor.putString("fullName", editTextName.getText().toString()); // Storing string
+                        editor.putString("email", editTextEmail.getText().toString()); // Storing string
+                        editor.putString("imageURL",imageSelected); // Storing string
+                        editor.putInt("loginType", 0);
+                        editor.putString("userID",documentReference.getId());
+
+                        editor.apply(); // commit changes
+
+                        startActivity(new Intent(SignUpActivity.this, NavigationMainActivity.class));
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Firebase: ", "Error adding user", e);
+                    }
+                });
+
     }
 
+    private void uploadImage() {
+
+        if(imageURI != null)
+        {
+            kProgressHUD.show();
+
+            //Upload image to Storage and get the url
+            final StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
+            ref.putFile(imageURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Log.d("FIREBASE: ", "Uploaded image URL: "+ uri.toString());
+                            imageSelected = uri.toString();
+
+                            //Create new user and use image URL
+                            addAuthUser();
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void addAuthUser()
+    {
+        // [START create_user_with_email]
+        mAuth.createUserWithEmailAndPassword(editTextEmail.getText().toString(), editTextPassword.getText().toString())
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("FIREBASE :", "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                           //createUser();
+                            updateUserProfile();
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("FIREBASE :", "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+
+                            //Failed, still dismiss the HUD
+                            kProgressHUD.dismiss();
+                        }
+                    }
+                });
+    }
+
+
+    private void updateUserProfile()
+    {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(editTextName.getText().toString().trim())
+                .setPhotoUri(Uri.parse(imageSelected))
+                .build();
+
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            //Log.d(TAG, "User profile updated.");
+
+                            //Dismiss HUD
+                            kProgressHUD.dismiss();
+
+                            //Log.d("Firebase: ", "User added with ID: " + documentReference.getId());
+
+                            //Save details in shared pref
+                            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+                            SharedPreferences.Editor editor = pref.edit();
+
+                            editor.putString("fullName", editTextName.getText().toString()); // Storing string
+                            editor.putString("email", editTextEmail.getText().toString()); // Storing string
+                            editor.putString("imageURL",imageSelected); // Storing string
+                            editor.putInt("loginType", 0);
+                            editor.putString("userID",user.getUid());
+
+                            editor.apply(); // commit changes
+
+                            startActivity(new Intent(SignUpActivity.this, NavigationMainActivity.class));
+
+                        }
+                    }
+                });
+    }
 
 }

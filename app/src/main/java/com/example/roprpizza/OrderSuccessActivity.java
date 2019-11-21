@@ -2,6 +2,7 @@ package com.example.roprpizza;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Intent;
@@ -40,15 +41,7 @@ public class OrderSuccessActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (ActivityCompat.checkSelfPermission(OrderSuccessActivity.this, Manifest.permission.CALL_PHONE) ==
-                        PackageManager.PERMISSION_GRANTED)
-                {
-                    startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:7783252701")));
-                }
-                else
-                {
-                    Toast.makeText(OrderSuccessActivity.this, "Permission not granted.", Toast.LENGTH_SHORT).show();
-                }
+                placePhoneCall();
             }
         });
 
@@ -68,5 +61,24 @@ public class OrderSuccessActivity extends AppCompatActivity {
 
         //Do nothing on back press
         Toast.makeText(this, "No further back allowed.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void placePhoneCall() {
+
+        //If not ask for permission
+
+        if (ContextCompat.checkSelfPermission(OrderSuccessActivity.this,
+                Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(OrderSuccessActivity.this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    1);
+
+        } else {
+            // Permission has already been granted
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:7783252701")));
+        }
+
     }
 }

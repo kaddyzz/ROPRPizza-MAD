@@ -1,6 +1,7 @@
 package com.example.roprpizza;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,20 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
+import java.util.List;
+
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.ViewHolder> {
 
     private Context context;
+    private List<OrderHistoryModal> orderList;
+
+
+    public OrderHistoryAdapter(List<OrderHistoryModal> orderList)
+    {
+        this.orderList = orderList;
+    }
 
     @NonNull
     @Override
@@ -34,19 +46,29 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        //Bind data from database here
+        final OrderHistoryModal orderData = orderList.get(position);
 
         holder.buttonReorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Just a test", Toast.LENGTH_SHORT).show();
+                //Move to next
+                Intent moveWithData = new Intent( context, SelectAddressActivity.class);
+                moveWithData.putExtra("pizzaName", orderData.getOrderName());
+                moveWithData.putExtra("allergies", orderData.getOrderAllergies());
+
+                context.startActivity(moveWithData);
             }
         });
+
+        holder.textOrderName.setText(orderData.getOrderName());
+        holder.textOrderPrice.setText(orderData.getOrderPrice());
+        holder.textOrderDate.setText(orderData.getOrderDate());
+        holder.textOrderID.setText("#" + orderData.getOrderID().substring(0,6));
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return orderList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder

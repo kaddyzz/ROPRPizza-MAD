@@ -13,15 +13,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,32 +39,64 @@ public class HomeActivity extends Fragment {
 
     RecyclerView recyclerView;
     HomeAdapter homeAdapter;
-    ArrayList<PizzaTypesModelClass> pizzaData;
 
-    public static final String[] pizzaName= {"Pepperoni","Sausage", "Cheese Pizza","Hawaiian","Chicken Bacon","Garden Fresh","Six Cheese","Spinach Alferdo"};
-    public static final int[] pizzaImages = {R.drawable.p11,R.drawable.p2,R.drawable.p3,R.drawable.p4,R.drawable.p5,R.drawable.p6,R.drawable.p7,R.drawable.p8};
+    private FirebaseFirestore db;
+    //Progress HUD
+    KProgressHUD kProgressHUD;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_home, container, false);
+        final View view = inflater.inflate(R.layout.activity_home, container, false);
 
-        pizzaData = new ArrayList<>();
+        // [START get_firestore_instance]
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        for(int i=0;i<pizzaName.length;i++)
-        {
-            PizzaTypesModelClass pizzaDataObj = new PizzaTypesModelClass(pizzaName[i],pizzaImages[i]);
+        //Create HUD
+        kProgressHUD = KProgressHUD.create(getActivity())
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setDetailsLabel("Getting Pizza")
+                .setCancellable(false)
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f);
 
-            pizzaData.add(pizzaDataObj);
-        }
+        //Create modal class object
+        final List<PizzaTypesModelClass> pizzaList = new ArrayList<>();
 
-        homeAdapter = new HomeAdapter(pizzaData);
-        recyclerView = view.findViewById(R.id.recyclerViewPizzas);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(homeAdapter);
+        //Start HUD
+        kProgressHUD.show();
 
+        //Get pizza from firebase
+        db.collection("pizzaHome")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
+                        //Dismiss HUD
+                        kProgressHUD.dismiss();
 
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("FIREBASE", document.getId() + " => " + document.get("pizzaName"));
+
+                                //Add each pizza to list
+                                PizzaTypesModelClass pizzaDataObj = new PizzaTypesModelClass(document.get("pizzaName").toString(),document.get("pizzaImage").toString());
+
+                                pizzaList.add(pizzaDataObj);
+                            }
+
+                            homeAdapter = new HomeAdapter(pizzaList);
+                            recyclerView = view.findViewById(R.id.recyclerViewPizzas);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            recyclerView.setItemAnimator(new DefaultItemAnimator());
+                            recyclerView.setAdapter(homeAdapter);
+
+                        } else {
+                            Log.d("FIREBASE", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
         return view;
     }

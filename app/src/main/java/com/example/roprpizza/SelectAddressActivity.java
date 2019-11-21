@@ -1,5 +1,6 @@
 package com.example.roprpizza;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
@@ -35,6 +37,7 @@ public class SelectAddressActivity extends AppCompatActivity {
     Geocoder geocoder;
     List<Address> addresses;
     String pizzaName;
+    String pizzaAllergies;
 
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -93,6 +96,8 @@ public class SelectAddressActivity extends AppCompatActivity {
         if(bundle!=null)
         {
             pizzaName = bundle.getString("pizzaName");
+            pizzaAllergies = bundle.getString("allergies");
+
         }
     }
 
@@ -151,12 +156,23 @@ public class SelectAddressActivity extends AppCompatActivity {
 
                             } catch (IOException e) {
                                 Log.e("ROPR Pizza : Location", "IOException : " + e );
+                                Toast.makeText(SelectAddressActivity.this, "Unable to get the location!", Toast.LENGTH_SHORT).show();
                             }
 
 
                         }
+                        else {
+                            Toast.makeText(SelectAddressActivity.this, "Unable to get the location!", Toast.LENGTH_SHORT).show();
+
+                        }
                     }
-                });
+                }).addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(SelectAddressActivity.this, "Unable to get the location!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
 
@@ -181,6 +197,9 @@ public class SelectAddressActivity extends AppCompatActivity {
             //Move to next
             Intent moveWithData = new Intent( SelectAddressActivity.this, PaymentActivity.class);
             moveWithData.putExtra("pizzaName", pizzaName);
+            moveWithData.putExtra("allergies", pizzaAllergies);
+            moveWithData.putExtra("address", aptNumberEditText.getText().toString() + " " +cityEditText.getText().toString() + " " + postalEditText.getText().toString());
+
 
             startActivity(moveWithData);
         }

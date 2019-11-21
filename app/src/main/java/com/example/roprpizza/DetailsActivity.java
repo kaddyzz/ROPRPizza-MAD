@@ -13,12 +13,14 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 public class DetailsActivity extends AppCompatActivity {
 
-    int pizzaImage;
+    String pizzaImage;
     String pizzaName;
     String drinkName = "";
-    String allergies = "";
+    EditText allergiesEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ public class DetailsActivity extends AppCompatActivity {
         ImageView pizzaImageView = findViewById(R.id.imageViewPizza);
         final Button checkOutButton = findViewById(R.id.buttonConfirm);
         RadioGroup radioGroupDrinks = findViewById(R.id.radioGroupDrinks);
-        EditText allergiesEditText = findViewById(R.id.editTextAllergies);
+        allergiesEditText = findViewById(R.id.editTextAllergies);
 
         radioGroupDrinks.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -73,10 +75,10 @@ public class DetailsActivity extends AppCompatActivity {
 
         if(bundle!=null)
         {
-            pizzaImage = bundle.getInt("pizzaImage");
+            pizzaImage = bundle.getString("pizzaImage");
             pizzaName = bundle.getString("pizzaName");
 
-            pizzaImageView.setImageResource(pizzaImage);
+            Glide.with(DetailsActivity.this).load(pizzaImage).into(pizzaImageView);
         }
     }
 
@@ -92,8 +94,8 @@ public class DetailsActivity extends AppCompatActivity {
 
             //Move to next
             Intent moveWithData = new Intent( DetailsActivity.this, SelectAddressActivity.class);
-            moveWithData.putExtra("pizzaName", pizzaName);
-            moveWithData.putExtra("allergies", allergies);
+            moveWithData.putExtra("pizzaName", pizzaName + " with " + drinkName);
+            moveWithData.putExtra("allergies", allergiesEditText.getText().toString());
 
             startActivity(moveWithData);
         }

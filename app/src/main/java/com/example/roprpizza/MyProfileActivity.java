@@ -29,6 +29,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -69,16 +70,9 @@ public class MyProfileActivity extends Fragment {
         // Build a GoogleSignInClient with the options specified by gso.
         googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
-        if (pref.getInt("loginType", 0) == 0)
-        {
-            //If normal login type
-            profileImageView.setImageBitmap(MyUtilities.decodeBase64(pref.getString("imageURL", "")));
-        }
-        else
-        {
-            //URL login
-            Glide.with(this).load(pref.getString("imageURL", "")).into(profileImageView);
-        }
+        //URL login
+        Glide.with(this).load(pref.getString("imageURL", "")).into(profileImageView);
+
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +97,8 @@ public class MyProfileActivity extends Fragment {
         switch(loginType) {
             case 0:
             {
+                FirebaseAuth.getInstance().signOut();
+
                 final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
                 SharedPreferences.Editor editor = pref.edit();
                 editor.clear();

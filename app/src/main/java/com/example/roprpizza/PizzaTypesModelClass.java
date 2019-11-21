@@ -5,31 +5,19 @@ public class PizzaTypesModelClass
 
     //Model class for data population
     private String pizzaName;
-    private int imageOfPizza;
+    private String imageOfPizza;
 
-    public PizzaTypesModelClass(String pizzaName, int imageOfPizza)
+    public PizzaTypesModelClass(String pizzaName, String imageOfPizza)
     {
         this.pizzaName = pizzaName;
         this.imageOfPizza = imageOfPizza;
     }
 
-    public String getPizzaName()
-    {
+    public String getPizzaName() {
         return pizzaName;
     }
 
-    public void setPizzaName(String pizzaName)
-    {
-        this.pizzaName = pizzaName;
-    }
-
-    public int getImageOfPizza()
-    {
+    public String getImageOfPizza() {
         return imageOfPizza;
-    }
-
-    public void setImageOfPizza(int imageOfPizza)
-    {
-        this.imageOfPizza = imageOfPizza;
     }
 }
