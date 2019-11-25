@@ -8,11 +8,14 @@
 
     <View
         android:id="@+id/viewProfile"
-        android:layout_width="410dp"
+        android:layout_width="0dp"
         android:layout_height="222dp"
-        android:background="#000000"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/btnsign"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,10 +35,14 @@
 
     <TextView
         android:id="@+id/textViewName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
         android:layout_marginTop="32dp"
-        android:text="TextView"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:gravity="center"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,10 +50,14 @@
 
     <TextView
         android:id="@+id/textViewEmail"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
         android:layout_marginTop="32dp"
-        android:text="TextView"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:gravity="center"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
@@ -55,10 +66,16 @@
 
     <Button
         android:id="@+id/buttonLogout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/btnsign"
         android:text="@string/logoutText"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewEmail" />

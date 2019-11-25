@@ -125,8 +125,24 @@
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         android:text="@string/signUpText"
+        android:background="@drawable/btnsign"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword" />
+
+    <ImageView
+        android:id="@+id/imageViewLoad"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/logoText"
+        android:src="@drawable/animation"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/animation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

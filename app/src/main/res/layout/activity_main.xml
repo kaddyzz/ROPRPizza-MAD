@@ -90,7 +90,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
+        app:layout_constraintTop_toBottomOf="@+id/logoImage" />
 
     <EditText
         android:id="@+id/editTextPassword"
@@ -163,8 +163,10 @@
         android:layout_marginStart="42dp"
         android:layout_marginLeft="42dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/btnsign"
         android:radius="10dp"
         android:text="@string/loginText"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
@@ -175,21 +177,37 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="42dp"
         android:layout_marginRight="42dp"
+        android:background="@drawable/btnsign"
         android:radius="10dp"
         android:text="@string/signUpText"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
     <ImageView
-        android:id="@+id/imageViewLogo"
+        android:id="@+id/logoImage"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:contentDescription="@string/logoText"
         app:layout_constraintEnd_toStartOf="@+id/imageViewBackground"
         app:layout_constraintHorizontal_bias="0.50"
         app:layout_constraintStart_toEndOf="@+id/imageViewBackground"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo2" />
+        app:srcCompat="@mipmap/ic_launcher_f" />
+
+    <ImageView
+        android:id="@+id/imageViewLoad"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/logoText"
+        android:src="@drawable/animation"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/animation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -68,8 +68,6 @@ dependencies {
     //Multidex
     implementation 'com.android.support:multidex:1.0.3'
 
-    //Progress HUD
-    implementation 'com.kaopiz:kprogresshud:1.2.0'
 }
 
 

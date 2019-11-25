@@ -140,6 +140,8 @@
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         android:text="@string/callRestraunt"
+        android:background="@drawable/btnsign"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewPaymentMethodDescription" />
@@ -154,6 +156,8 @@
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         android:text="@string/home"
+        android:background="@drawable/btnsign"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonCall" />

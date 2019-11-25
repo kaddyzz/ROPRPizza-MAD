@@ -9,11 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,7 +23,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +36,10 @@ public class OrderHistoryActivity extends Fragment {
     OrderHistoryAdapter orderHistoryAdapter;
 
     private FirebaseFirestore db;
-    //Progress HUD
-    KProgressHUD kProgressHUD;
+
+    //Loading animation
+    AnimationDrawable animationDrawable;
+    ImageView loadingImageView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,15 +53,11 @@ public class OrderHistoryActivity extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         //Create HUD
-        kProgressHUD = KProgressHUD.create(getActivity())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setDetailsLabel("Getting order history")
-                .setCancellable(false)
-                .setAnimationSpeed(2)
-                .setDimAmount(0.5f);
+        loadingImageView = view.findViewById(R.id.imageViewLoad);
+        animationDrawable = (AnimationDrawable) loadingImageView.getDrawable();
 
-        kProgressHUD.show();
+        animationDrawable.start();
+        loadingImageView.setVisibility(View.VISIBLE);
 
         //Get id
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
@@ -75,7 +74,8 @@ public class OrderHistoryActivity extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                         //Dismiss HUD
-                        kProgressHUD.dismiss();
+                        loadingImageView.setVisibility(View.GONE);
+                        animationDrawable.stop();
 
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {

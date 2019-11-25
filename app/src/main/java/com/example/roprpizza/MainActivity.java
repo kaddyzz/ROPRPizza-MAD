@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -15,9 +16,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +54,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,15 +78,16 @@ public class MainActivity extends AppCompatActivity {
     Button signUpButton;
     EditText emailField;
     EditText passwordField;
+    ImageView loadingImageView;
 
     //Firebase
     private FirebaseFirestore db;
-    // [START declare_auth]
     private FirebaseAuth mAuth;
-    // [END declare_auth]
 
-    //Progress HUD
-    KProgressHUD kProgressHUD;
+
+    //Loading animation
+    AnimationDrawable animationDrawable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,12 +107,15 @@ public class MainActivity extends AppCompatActivity {
         signUpButton = findViewById(R.id.buttonSignUp);
         emailField = findViewById(R.id.editTextEmail);
         passwordField = findViewById(R.id.editTextPassword);
+        loadingImageView = findViewById(R.id.imageViewLoad);
+
+        animationDrawable = (AnimationDrawable) loadingImageView.getDrawable();
+
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //loginAction();
-                checkInFirebase();
+                loginAction();
             }
         });
 
@@ -124,9 +132,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
+
                     /* Write your logic here that will be executed when user taps next button */
-
-
                     loginAction();
                     handled = true;
                 }
@@ -138,17 +145,7 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
 
-        //Create HUD
-        kProgressHUD = KProgressHUD.create(MainActivity.this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setDetailsLabel("Logging In")
-                .setCancellable(false)
-                .setAnimationSpeed(2)
-                .setDimAmount(0.5f);
-
     }
-
 
 
     @Override
@@ -185,7 +182,8 @@ public class MainActivity extends AppCompatActivity {
     private void checkInFirebase() {
 
         //Start HUD
-        kProgressHUD.show();
+        animationDrawable.start();
+        loadingImageView.setVisibility(View.VISIBLE);
 
         //Firebase authentication
         mAuth.signInWithEmailAndPassword(emailField.getText().toString(), passwordField.getText().toString())
@@ -199,7 +197,8 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             //Dismiss HUD
-                            kProgressHUD.dismiss();
+                            loadingImageView.setVisibility(View.GONE);
+                            animationDrawable.stop();
 
                             try {
                                 String fullName = user.getDisplayName();
@@ -229,7 +228,8 @@ public class MainActivity extends AppCompatActivity {
 
                         } else {
                             // If sign in fails, display a message to the user.
-                            kProgressHUD.dismiss();
+                            loadingImageView.setVisibility(View.GONE);
+                            animationDrawable.stop();
                             Log.w("FIREBASE ::", "signInWithEmail:failure", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
@@ -423,7 +423,7 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
                     SharedPreferences.Editor editor = pref.edit();
 
-                    editor.putString("fullName", firstName+lastName); // Storing string
+                    editor.putString("fullName", firstName+ " " +lastName); // Storing string
                     editor.putString("email", email); // Storing string
                     editor.putString("imageURL", imageURL); // Storing string
                     editor.putInt("loginType",2);

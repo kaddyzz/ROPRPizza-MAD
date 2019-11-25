@@ -47,7 +47,7 @@
         android:layout_marginRight="16dp"
         android:ems="10"
         android:hint="@string/aptNumber"
-        android:inputType="number"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDetailsTitle" />
@@ -122,6 +122,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/goToCheckout"
+        android:background="@drawable/btnsign"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextProvince" />

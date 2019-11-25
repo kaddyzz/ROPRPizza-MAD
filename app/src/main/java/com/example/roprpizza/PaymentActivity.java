@@ -6,16 +6,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.kaopiz.kprogresshud.KProgressHUD;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
@@ -42,7 +43,10 @@ public class PaymentActivity extends AppCompatActivity {
     String address;
 
     private FirebaseFirestore db;
-    KProgressHUD kProgressHUD;
+
+    //Loading animation
+    AnimationDrawable animationDrawable;
+    ImageView loadingImageView;
 
 
 
@@ -93,13 +97,8 @@ public class PaymentActivity extends AppCompatActivity {
             address = bundle.getString("address");
         }
 
-        kProgressHUD = KProgressHUD.create(PaymentActivity.this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setDetailsLabel("Placing your order")
-                .setCancellable(false)
-                .setAnimationSpeed(2)
-                .setDimAmount(0.5f);
+        loadingImageView = findViewById(R.id.imageViewLoad);
+        animationDrawable = (AnimationDrawable) loadingImageView.getDrawable();
     }
 
 
@@ -155,7 +154,8 @@ public class PaymentActivity extends AppCompatActivity {
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
         SharedPreferences.Editor editor = pref.edit();
 
-        kProgressHUD.show();
+        animationDrawable.start();
+        loadingImageView.setVisibility(View.VISIBLE);
 
         //Map all the values
         Map<String, Object> orderInfo = new HashMap<>();
@@ -176,7 +176,8 @@ public class PaymentActivity extends AppCompatActivity {
                     public void onSuccess(DocumentReference documentReference) {
 
                         //Dismiss HUD
-                        kProgressHUD.dismiss();
+                        loadingImageView.setVisibility(View.GONE);
+                        animationDrawable.stop();
 
                         Intent moveWithData = new Intent( PaymentActivity.this, OrderSuccessActivity.class);
                         moveWithData.putExtra("paymentMethod", paymentMethod);

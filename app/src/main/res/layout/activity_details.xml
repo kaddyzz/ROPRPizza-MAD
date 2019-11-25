@@ -43,8 +43,7 @@
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/p7" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/textViewLabel1"
@@ -120,6 +119,8 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="24dp"
             android:text="@string/goToSelectAddress"
+            android:background="@drawable/btnsign"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

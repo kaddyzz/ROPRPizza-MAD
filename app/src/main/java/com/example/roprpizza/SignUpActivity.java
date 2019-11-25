@@ -16,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -42,7 +43,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -59,8 +59,8 @@ public class SignUpActivity extends AppCompatActivity {
     EditText editTextEmail;
     EditText editTextPassword;
     EditText editTextConfirmPassword;
-
     ImageView imageProfile;
+
     Uri imageURI;
 
     String imageSelected = "";
@@ -73,8 +73,9 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     // [END declare_auth]
 
-    //Progress HUD
-    KProgressHUD kProgressHUD;
+    //Loading animation
+    AnimationDrawable animationDrawable;
+    ImageView loadingImageView;
 
     //Email Regex
     public static boolean isValidEmail(CharSequence target) {
@@ -121,15 +122,9 @@ public class SignUpActivity extends AppCompatActivity {
         storageReference = storage.getReference();
         mAuth = FirebaseAuth.getInstance();
 
+        loadingImageView = findViewById(R.id.imageViewLoad);
+        animationDrawable = (AnimationDrawable) loadingImageView.getDrawable();
 
-        //Create HUD
-        kProgressHUD = KProgressHUD.create(SignUpActivity.this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setDetailsLabel("Setting Up Profile")
-                .setCancellable(false)
-                .setAnimationSpeed(2)
-                .setDimAmount(0.5f);
     }
 
     private void selectImage() {
@@ -263,7 +258,8 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onSuccess(DocumentReference documentReference) {
 
                         //Dismiss HUD
-                        kProgressHUD.dismiss();
+                        loadingImageView.setVisibility(View.GONE);
+                        animationDrawable.stop();
 
                         Log.d("Firebase: ", "User added with ID: " + documentReference.getId());
 
@@ -296,7 +292,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         if(imageURI != null)
         {
-            kProgressHUD.show();
+            animationDrawable.start();
+            loadingImageView.setVisibility(View.VISIBLE);
 
             //Upload image to Storage and get the url
             final StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
@@ -340,7 +337,8 @@ public class SignUpActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
 
                             //Failed, still dismiss the HUD
-                            kProgressHUD.dismiss();
+                            loadingImageView.setVisibility(View.GONE);
+                            animationDrawable.stop();
                         }
                     }
                 });
@@ -364,7 +362,7 @@ public class SignUpActivity extends AppCompatActivity {
                             //Log.d(TAG, "User profile updated.");
 
                             //Dismiss HUD
-                            kProgressHUD.dismiss();
+                            animationDrawable.stop();
 
                             //Log.d("Firebase: ", "User added with ID: " + documentReference.getId());
 
